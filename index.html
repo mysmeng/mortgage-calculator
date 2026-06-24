@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>提前还房贷计算器</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="tool-panel input-panel" aria-labelledby="form-title">
+        <div class="panel-heading">
+          <p class="eyebrow">等额本息 · 固定利率</p>
+          <h1 id="form-title">提前还房贷计算器</h1>
+        </div>
+
+        <form id="calculatorForm" novalidate>
+          <div class="field-grid">
+            <label class="field wide-field" for="currentPrincipal">
+              <span>当前剩余本金（可选，更准确）</span>
+              <input
+                id="currentPrincipal"
+                name="currentPrincipal"
+                type="number"
+                inputmode="decimal"
+                min="0.01"
+                step="0.01"
+                placeholder="不填则按月供、期数和利率反推"
+              />
+            </label>
+
+            <label class="field" for="remainingPeriods">
+              <span>剩余期数</span>
+              <input
+                id="remainingPeriods"
+                name="remainingPeriods"
+                type="number"
+                inputmode="numeric"
+                min="1"
+                step="1"
+                value="240"
+                required
+              />
+            </label>
+
+            <label class="field" for="monthlyPayment">
+              <span>当前月供</span>
+              <input
+                id="monthlyPayment"
+                name="monthlyPayment"
+                type="number"
+                inputmode="decimal"
+                min="0.01"
+                step="0.01"
+                value="6500"
+                required
+              />
+            </label>
+
+            <label class="field" for="annualRatePercent">
+              <span>当前年利率 %</span>
+              <input
+                id="annualRatePercent"
+                name="annualRatePercent"
+                type="number"
+                inputmode="decimal"
+                min="0"
+                step="0.0001"
+                value="4.2"
+                required
+              />
+            </label>
+
+            <label class="field" for="prepayAfterPeriods">
+              <span>第几期后提前还款</span>
+              <input
+                id="prepayAfterPeriods"
+                name="prepayAfterPeriods"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                value="0"
+                required
+              />
+            </label>
+
+            <fieldset id="prepaymentInputMode" class="strategy-field wide-field">
+              <legend>提前还款金额输入方式</legend>
+              <div class="segmented-control" role="radiogroup">
+                <label>
+                  <input
+                    id="prepaymentModeAmount"
+                    type="radio"
+                    name="prepaymentInputMode"
+                    value="amount"
+                    checked
+                  />
+                  <span>直接填写金额</span>
+                </label>
+                <label>
+                  <input
+                    id="prepaymentModePeriods"
+                    type="radio"
+                    name="prepaymentInputMode"
+                    value="periods"
+                  />
+                  <span>按期数本金</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <label class="field" for="prepaymentAmount" data-mode-panel="amount">
+              <span>提前还款金额</span>
+              <input
+                id="prepaymentAmount"
+                name="prepaymentAmount"
+                type="number"
+                inputmode="decimal"
+                min="0.01"
+                step="0.01"
+                value="100000"
+                required
+              />
+            </label>
+
+            <label
+              class="field mode-panel-hidden"
+              for="prepaymentPeriods"
+              data-mode-panel="periods"
+            >
+              <span>提前还多少期</span>
+              <input
+                id="prepaymentPeriods"
+                name="prepaymentPeriods"
+                type="number"
+                inputmode="decimal"
+                min="0.01"
+                step="1"
+                value="6"
+              />
+            </label>
+
+            <label class="field" for="feeAmount">
+              <span>手续费 / 违约金</span>
+              <input
+                id="feeAmount"
+                name="feeAmount"
+                type="number"
+                inputmode="decimal"
+                min="0"
+                step="0.01"
+                value="0"
+                required
+              />
+            </label>
+          </div>
+
+          <fieldset class="strategy-field">
+            <legend>提前还款后策略</legend>
+            <div class="segmented-control" role="radiogroup">
+              <label>
+                <input
+                  id="strategy"
+                  type="radio"
+                  name="strategy"
+                  value="shorterTerm"
+                  checked
+                />
+                <span>月供不变，缩短期限</span>
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="strategy"
+                  value="lowerPayment"
+                />
+                <span>期限不变，降低月供</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <p id="errorMessage" class="error-message" role="alert"></p>
+
+          <div class="actions">
+            <button type="submit">计算</button>
+            <button type="button" id="resetSample" class="secondary-button">
+              恢复示例
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="tool-panel output-panel" aria-labelledby="result-title">
+        <div class="panel-heading result-heading">
+          <p class="eyebrow">计算结果</p>
+          <h2 id="result-title">方案对比</h2>
+        </div>
+
+        <div id="summary" class="summary-grid" aria-live="polite"></div>
+
+        <div class="table-wrap">
+          <table id="comparison">
+            <caption>
+              提前还款后两种策略对比
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">策略</th>
+                <th scope="col">新月供</th>
+                <th scope="col">新剩余期数</th>
+                <th scope="col">后续利息</th>
+                <th scope="col">节省利息</th>
+                <th scope="col">净节省</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div id="schedule" class="schedule-panel"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
