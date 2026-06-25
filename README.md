@@ -2,8 +2,6 @@
 
 等额本息固定利率提前还房贷计算器。
 
-Cloudflare Pages 自动部署测试版本。
-
 ## 运行效果
 
 ![提前还房贷计算器运行效果](docs/assets/screenshot.png)
