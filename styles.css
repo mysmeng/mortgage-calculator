@@ -65,6 +65,8 @@ input {
 
 .panel-heading {
   margin-bottom: 22px;
+  position: relative;
+  padding-right: 54px;
 }
 
 .result-heading {
@@ -92,6 +94,38 @@ h1 {
 
 h2 {
   font-size: 22px;
+}
+
+.repo-link {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-grid;
+  align-items: center;
+  justify-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  background: var(--surface-strong);
+  text-decoration: none;
+}
+
+.repo-link:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #ecfdf5;
+}
+
+.repo-link:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.18);
+  outline-offset: 2px;
+}
+
+.repo-link svg {
+  width: 22px;
+  height: 22px;
 }
 
 .field-grid {

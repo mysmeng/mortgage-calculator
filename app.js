@@ -5,12 +5,11 @@ import {
 } from "./mortgage.js";
 
 const SAMPLE_INPUT = {
-  currentPrincipal: "",
   remainingPeriods: 240,
   monthlyPayment: 6500,
   annualRatePercent: 4.2,
   prepayAfterPeriods: 0,
-  prepaymentInputMode: "amount",
+  prepaymentInputMode: "periods",
   prepaymentAmount: 100000,
   prepaymentPeriods: 6,
   feeAmount: 0,
@@ -62,7 +61,6 @@ function readFormValues() {
   const formData = new FormData(form);
 
   return {
-    currentPrincipal: readOptionalNumber(formData.get("currentPrincipal")),
     remainingPeriods: Number(formData.get("remainingPeriods")),
     monthlyPayment: Number(formData.get("monthlyPayment")),
     annualRatePercent: Number(formData.get("annualRatePercent")),
@@ -102,10 +100,7 @@ function setFormValues(values) {
 function renderSummary(result) {
   const items = [
     {
-      label:
-        result.principalSource === "provided"
-          ? "当前剩余本金"
-          : "估算当前剩余本金",
+      label: "估算当前剩余本金",
       value: formatCurrency(result.currentPrincipal),
       tone: "primary",
     },
@@ -195,9 +190,7 @@ function renderSchedule(result, selectedStrategy) {
   const rows = [
     [
       "第 0 期",
-      result.principalSource === "provided"
-        ? "手动填写的当前剩余本金"
-        : "按月供、期数和利率反推的本金",
+      "按月供、期数和利率反推的本金",
       formatCurrency(result.currentPrincipal),
     ],
     [
